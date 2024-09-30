@@ -1,0 +1,52 @@
+package org.stone.thiagovb62.service;
+
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.model.Container;
+import com.github.dockerjava.api.model.Image;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class DockerService {
+
+
+    private final DockerClient dockerClient;
+
+
+    public DockerService(DockerClient client) {
+        this.dockerClient = client;
+    }
+
+
+    public List<Container> listContainers(boolean all) {
+        return dockerClient.listContainersCmd().withShowAll(all).exec();
+
+    }
+
+    public List<Image> listImages(){
+        return dockerClient.listImagesCmd().exec();
+    }
+
+    public List<Image> filterImages(String imageName){
+        return dockerClient.listImagesCmd().withImageNameFilter(imageName).exec();
+    }
+
+
+    public void startContainer(String containerId){
+        dockerClient.startContainerCmd(containerId).exec();
+    }
+
+    public void deleteContainer(String containerId){
+        dockerClient.removeContainerCmd(containerId).exec();
+    }
+
+    public void createContainer(String image){
+        dockerClient.createContainerCmd(image).exec();
+    }
+
+    public void stopContainer(String containerId) {
+        dockerClient.stopContainerCmd(containerId).exec();
+    }
+}
